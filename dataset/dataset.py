@@ -18,14 +18,16 @@ def read_image(img_path):
     return img
 
 def get_id_from_imname(imname):
-    id = imname[imname.find('_')+1:]
-    return id
+    imname = os.path.split(imname)[1]
+    name = os.path.splitext(imname)[0]
+
+    id = name[name.find('_')+1:]
+    return int(id)
 
 class TBDataset(Dataset):
     def __init__(self, dataset, transform=None):
-        self.dataset = dataset # dataset_dir:'/media/data/mu/ML2/data/HIV/{image}_{id}.jpg
+        self.dataset = dataset # dataset_dir:'{image_folder}/{image}_{id}.jpg
         self.transform = transform
-        print('self.dataset', self.dataset)
         self.ids = [get_id_from_imname(f) for f in self.dataset]
 
     def __len__(self):

@@ -6,6 +6,7 @@ def parse_args():
 
     # Dataset parameters
     parser.add_argument('--data_dir', metavar='DIR', default = '/home/project/data/imagenette2-320/', help='path to dataset')
+    parser.add_argument('--data_dir_list', default =['/media/data/mu/ML2/data2/our_data/Diabetes/images', '/media/data/mu/ML2/data2/our_data/HIV/images'], help='list of path to dataset')
 
     # Model parameters
     parser.add_argument('--model', default='resnet50', type=str, metavar='MODEL',
@@ -24,7 +25,7 @@ def parse_args():
                         help='Override mean pixel value of dataset')
     parser.add_argument('--std', type=float, nargs='+', default=[0.229, 0.224, 0.225], metavar='STD',
                         help='Override std deviation of of dataset')
-    parser.add_argument('-b', '--batch-size', type=int, default=32, metavar='N',
+    parser.add_argument('-b', '--batch-size', type=int, default=128, metavar='N',
                         help='input batch size for training (default: 128)')
 
     # Optimizer parameters
@@ -44,7 +45,7 @@ def parse_args():
                         help='warmup learning rate (default: 0.0001)')
     parser.add_argument('--min-lr', type=float, default=1e-6, metavar='LR',
                         help='lower lr bound for cyclic schedulers that hit 0 (1e-5)')
-    parser.add_argument('--epochs', type=int, default=20, metavar='N',
+    parser.add_argument('--epochs', type=int, default=1, metavar='N',
                         help='number of epochs to train (default: 300)')
     parser.add_argument('--decay-epochs', type=float, default=100, metavar='N',
                         help='epoch interval to decay LR')

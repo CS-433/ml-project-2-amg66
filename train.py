@@ -9,8 +9,11 @@ from datetime import datetime
 import torch
 import torch.nn as nn
 import torchvision.utils
+from dataset.data_loader import create_loader
+from timm.data import resolve_data_config
 
-from timm.data import create_dataset, create_loader, resolve_data_config
+from dataset.dataset import *
+# from dataset.data_loader import *
 from timm.models import create_model, safe_model_name
 from timm.utils import *
 from timm.loss import *
@@ -21,7 +24,7 @@ from f1_loss import F1_Loss, f1_score
 from focal_loss import FocalLoss
 from arguments import parse_args
 
-os.environ["CUDA_VISIBLE_DEVICES"] = '0'
+# os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 torch.backends.cudnn.benchmark = True
 _logger = logging.getLogger('train')
@@ -55,42 +58,45 @@ def main():
 
     # setup learning rate schedule and starting epoch
     lr_scheduler, num_epochs = create_scheduler(args, optimizer)
-
     _logger.info('Scheduled epochs: {}'.format(num_epochs))
 
-    dataset_train = create_dataset(
-        'train', root=args.data_dir, split='train', is_training=True,
-        batch_size=args.batch_size)
-    dataset_eval = create_dataset(
-        'val', root=args.data_dir, split='val', is_training=False,
-        batch_size=args.batch_size)
 
-    # create data loaders w/ augmentation pipeiine
-    loader_train = create_loader(
-        dataset_train,
-        input_size=data_config['input_size'],
-        batch_size=args.batch_size,
-        is_training=True,
-        scale=[0.08, 1.0],
-        ratio=[3./4., 4./3.],
-        hflip=0.5,
-        vflip=0.5,
-        color_jitter=0.4,
-        auto_augment=None,
-        mean=data_config['mean'],
-        std=data_config['std'],
-        num_workers=4
-    )
+    # dataset_dir = ['/media/data/mu/ML2/data/Diabetes/images', '/media/data/mu/ML2/data/HIV/images']
+    loader_train, loader_eval = create_loader(args.data_dir_list, batch_size=args.batch_size)
 
-    loader_eval = create_loader(
-        dataset_eval,
-        input_size=data_config['input_size'],
-        batch_size=args.batch_size,
-        is_training=False,
-        mean=data_config['mean'],
-        std=data_config['std'],
-        num_workers=4
-    )
+    # dataset_train = create_dataset(
+    #     'train', root=args.data_dir, split='train', is_training=True,
+    #     batch_size=args.batch_size)
+    # dataset_eval = create_dataset(
+    #     'val', root=args.data_dir, split='val', is_training=False,
+    #     batch_size=args.batch_size)
+
+    # # create data loaders w/ augmentation pipeiine
+    # loader_train = create_loader(
+    #     dataset_train,
+    #     input_size=data_config['input_size'],
+    #     batch_size=args.batch_size,
+    #     is_training=True,
+    #     scale=[0.08, 1.0],
+    #     ratio=[3./4., 4./3.],
+    #     hflip=0.5,
+    #     vflip=0.5,
+    #     color_jitter=0.4,
+    #     auto_augment=None,
+    #     mean=data_config['mean'],
+    #     std=data_config['std'],
+    #     num_workers=4
+    # )
+
+    # loader_eval = create_loader(
+    #     dataset_eval,
+    #     input_size=data_config['input_size'],
+    #     batch_size=args.batch_size,
+    #     is_training=False,
+    #     mean=data_config['mean'],
+    #     std=data_config['std'],
+    #     num_workers=4
+    # )
 
     # setup loss function
     if args.focal_loss:
@@ -200,6 +206,7 @@ def train_one_epoch(epoch, model, loader, optimizer, loss_fn, args, lr_scheduler
 
     if hasattr(optimizer, 'sync_lookahead'):
         optimizer.sync_lookahead()
+
 
     return OrderedDict([('loss', losses_m.avg)])
 
