@@ -119,10 +119,6 @@ def main():
             end = time.time()
             print(f'Time for epoch-{epoch} :', end-start)
 
-        print('===============Testing=============')
-        eval_metrics = validate(model, loader_test, validate_loss_fn, args, num_test)
-
-
     except KeyboardInterrupt:
         pass
     if best_metric is not None:
