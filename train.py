@@ -63,7 +63,7 @@ def main():
 
 
     # dataset_dir = ['/media/data/mu/ML2/data/Diabetes/images', '/media/data/mu/ML2/data/HIV/images']
-    loader_train, loader_eval, num_train, num_eval = create_loader(args.data_dir, batch_size=args.batch_size)
+    loader_train, loader_eval, loader_test, num_train, num_eval, num_test = create_loader(args.data_dir, batch_size=args.batch_size)
 
     # setup loss function
     if args.focal_loss:
@@ -118,6 +118,11 @@ def main():
 
             end = time.time()
             print(f'Time for epoch-{epoch} :', end-start)
+
+        print('===============Testing=============')
+        eval_metrics = validate(model, loader_test, validate_loss_fn, args, num_test)
+
+
     except KeyboardInterrupt:
         pass
     if best_metric is not None:
@@ -133,6 +138,7 @@ def train_one_epoch(epoch, model, loader, optimizer, loss_fn, args, lr_scheduler
     model.train()
     last_idx = len(loader) - 1
     num_updates = epoch * len(loader)
+    end = time.time()
     for batch_idx, (input, target) in enumerate(loader):
         last_batch = batch_idx == last_idx
         data_time_m.update(time.time() - end)
@@ -183,69 +189,6 @@ def train_one_epoch(epoch, model, loader, optimizer, loss_fn, args, lr_scheduler
 
 
 def validate(model, loader, loss_fn, args, sample_num, log_suffix=''):
-    print('-----sample num', sample_num)
-    batch_time_m = AverageMeter()
-    losses_m = AverageMeter()
-    top1_m = AverageMeter()
-
-    model.eval()
-
-    end = time.time()
-    last_idx = len(loader) - 1
-    output_all = torch.zeros((sample_num, 2)).cuda()
-    target_all = torch.zeros(sample_num).cuda()
-    with torch.no_grad():
-        for batch_idx, (input, target) in enumerate(loader):
-            last_batch = batch_idx == last_idx
-            input = input.cuda()
-            target = target.cuda()
-
-            output = model(input)
-            if isinstance(output, (tuple, list)):
-                output = output[0]
-
-            loss = loss_fn(output, target)
-            [acc1] = accuracy(output, target, topk=(1,))
-
-            output_all[batch_idx*args.batch_size:batch_idx*args.batch_size+output.size(0),:] = output.detach()
-            target_all[batch_idx*args.batch_size:batch_idx*args.batch_size+output.size(0)] = target.detach()
-
-            reduced_loss = loss.data
-
-            torch.cuda.synchronize()
-
-            losses_m.update(reduced_loss.item(), input.size(0))
-            top1_m.update(acc1.item(), output.size(0))
-
-            batch_time_m.update(time.time() - end)
-            # print('batch time:', time.time() - end)
-            end = time.time()
-
-            # if batch_idx % args.log_interval == 0 or last_batch:
-            if batch_idx % args.log_interval == 0:
-                log_name = 'Test' + log_suffix
-                _logger.info(
-                    '{0}: [{1:>4d}/{2}]  '
-                    'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
-                    'Acc@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '.format(
-                        log_name, batch_idx, last_idx, 
-                        loss=losses_m, top1=top1_m))
-
-            if last_batch:
-                log_name = 'Test' + log_suffix
-                _logger.info(
-                    '{0}: [{1:>4d}/{2}]  '
-                    'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
-                    'Acc@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
-                    'F1score: {f1:.3f}'.format(
-                        log_name, batch_idx, last_idx,
-                        loss=losses_m, top1=top1_m, f1 = f1_score(target_all, output_all)))
-
-    metrics = OrderedDict([('loss', losses_m.avg), ('top1', top1_m.avg)])
-
-    return metrics
-
-def test(model, loader, loss_fn, args, sample_num, log_suffix=''):
     print('-----sample num', sample_num)
     batch_time_m = AverageMeter()
     losses_m = AverageMeter()

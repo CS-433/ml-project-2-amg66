@@ -28,17 +28,14 @@ class TBDataset(Dataset):
     def __init__(self, dataset, transform=None):
         self.dataset = dataset # dataset_dir:'{image_folder}/{image}_{id}.jpg
         self.transform = transform
-        self.imgs, self.ids = self.dataset
 
     def __len__(self):
-        return len(self.imgs)
+        return len(self.dataset)
 
     def __getitem__(self, index):
-        img_path = self.imgs[index]
-        id = self.ids[index]
-        # print('-----get item', id)
+        img_path = self.dataset[index][0]
+        id = int(self.dataset[index][1])
         img = read_image(img_path)
-        # img = Image.open(img_path).convert('RGB')
 
         if self.transform is not None:
             img = self.transform(img)
