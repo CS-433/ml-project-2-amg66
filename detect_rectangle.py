@@ -6,7 +6,10 @@ def detect_rectangle(input_path, out_path):
     list_files = os.listdir(input_path)
 
     for img_name in list_files:
+        if '.JPG' not in img_name:
+            continue
         img_path = input_path + img_name
+        print('image', img_path)
 
         image = cv2.imread(img_path)
         image = cv2.resize(image, (1024, 720))
