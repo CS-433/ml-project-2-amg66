@@ -84,41 +84,44 @@ def split_train_test(dataset_dir_list, train_ratio=0.8):
 
 def create_loader(dataset_dir, 
                   batch_size=64, 
-                  num_workers=4):
+                  input_size = 224,
+                  mean = [0.485, 0.456, 0.406],
+                  std = [0.229, 0.224, 0.225],
+                  num_workers=8):
 
     # TODO
     train_transforms = transforms.Compose([
-                            transforms.ToTensor(),
-                            transforms.Resize(256),
-                            transforms.RandomResizedCrop(224),
+                            transforms.Resize(int(1.1*input_size)),
+                            transforms.RandomResizedCrop(input_size),
                             transforms.RandomVerticalFlip(),
-                            transforms.CenterCrop(224),
+                            transforms.CenterCrop(input_size),
                             transforms.RandomPerspective(distortion_scale=0.6, p=1.0),
                             transforms.RandomRotation(degrees=(0, 180)),
-                            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+                            transforms.ToTensor(),
+                            transforms.Normalize(mean, std)
                         ])
     test_transforms = transforms.Compose([
+                            transforms.Resize(int(1.1*input_size)),
+                            transforms.CenterCrop(input_size),
                             transforms.ToTensor(),
-                            transforms.Resize(256),
-                            transforms.CenterCrop(224),
-                            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+                            transforms.Normalize(mean, std)          
                         ])
 
     train_data, val_data, test_data = get_train_test_data(dataset_dir)
 
     train_set = TBDataset(train_data, transform=train_transforms)
     train_loader = DataLoader(
-        train_set, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True, persistent_workers=True
+        train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True#, persistent_workers=True
     )
 
     val_set = TBDataset(val_data, transform=test_transforms)
     val_loader = DataLoader(
-        val_set, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True, persistent_workers=True
+        val_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True#, persistent_workers=True
     )
 
     test_set = TBDataset(test_data, transform=test_transforms)
     test_loader = DataLoader(
-        test_set, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True, persistent_workers=True
+        test_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True#, persistent_workers=True
     )
 
     num_train_data = len(train_data)

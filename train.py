@@ -14,7 +14,7 @@ from timm.data import resolve_data_config
 
 from dataset.dataset import *
 # from dataset.data_loader import *
-from timm.models import create_model, safe_model_name
+from timm.models import create_model, safe_model_name, load_checkpoint
 from timm.utils import *
 from timm.loss import *
 from timm.optim import create_optimizer_v2, optimizer_kwargs
@@ -23,6 +23,7 @@ from timm.scheduler import create_scheduler
 from f1_loss import F1_Loss, f1_score
 from focal_loss import FocalLoss
 from arguments import parse_args
+from update_test_log import update_test_summary
 
 # os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
@@ -39,7 +40,8 @@ def main():
         args.model,
         pretrained=args.pretrained,
         num_classes=args.num_classes,
-        drop_rate=0.0,
+        drop_rate=args.drop,
+        drop_connect_rate=args.drop_connect,
         global_pool=args.gp,
         checkpoint_path=args.initial_checkpoint)
 
@@ -63,7 +65,11 @@ def main():
 
 
     # dataset_dir = ['/media/data/mu/ML2/data/Diabetes/images', '/media/data/mu/ML2/data/HIV/images']
-    loader_train, loader_eval, loader_test, num_train, num_eval, num_test = create_loader(args.data_dir, batch_size=args.batch_size)
+    loader_train, loader_eval, loader_test, num_train, num_eval, num_test = create_loader(args.data_dir, 
+                                                                                          batch_size = args.batch_size, 
+                                                                                          input_size = args.input_size[-1],
+                                                                                          mean = args.mean,
+                                                                                          std = args.std)
 
     # setup loss function
     if args.focal_loss:
@@ -95,16 +101,16 @@ def main():
                 epoch, model, loader_train, optimizer, train_loss_fn, args,
                 lr_scheduler=lr_scheduler, output_dir=output_dir, model_ema=model_ema)
 
-            eval_metrics = validate(model, loader_eval, validate_loss_fn, args, num_eval)
+            eval_metrics = validate(model, loader_eval, validate_loss_fn, args, num_eval, split='Eval')
 
             if model_ema is not None and not args.model_ema_force_cpu:
                 ema_eval_metrics = validate(
-                    model_ema.module, loader_eval, validate_loss_fn, args, log_suffix=' (EMA)')
+                    model_ema.module, loader_eval, validate_loss_fn, args, num_eval, split='Eval', log_suffix=' (EMA)')
                 eval_metrics = ema_eval_metrics
 
             if lr_scheduler is not None:
                 # step LR for next epoch
-                lr_scheduler.step(epoch + 1, eval_metrics['top1'])
+                lr_scheduler.step(epoch + 1, eval_metrics[args.metric])
 
             if output_dir is not None:
                 update_summary(
@@ -113,7 +119,7 @@ def main():
 
             if saver is not None:
                 # save proper checkpoint with eval metric
-                save_metric = eval_metrics['top1']
+                save_metric = eval_metrics[args.metric]
                 best_metric, best_epoch = saver.save_checkpoint(epoch, metric=save_metric)
 
             end = time.time()
@@ -123,6 +129,11 @@ def main():
         pass
     if best_metric is not None:
         _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
+        load_checkpoint(model, os.path.join(output_dir, 'checkpoint-{}.pth.tar'.format(best_epoch)))
+        test_metrics = validate(model, loader_test, validate_loss_fn, args, num_test, split='Test')
+        if output_dir is not None:
+            update_test_summary(
+                best_epoch, best_metric, test_metrics, os.path.join(output_dir, 'summary_test.csv'))
 
 
 def train_one_epoch(epoch, model, loader, optimizer, loss_fn, args, lr_scheduler=None, output_dir=None, model_ema=None):
@@ -180,11 +191,10 @@ def train_one_epoch(epoch, model, loader, optimizer, loss_fn, args, lr_scheduler
     if hasattr(optimizer, 'sync_lookahead'):
         optimizer.sync_lookahead()
 
-
     return OrderedDict([('loss', losses_m.avg)])
 
 
-def validate(model, loader, loss_fn, args, sample_num, log_suffix=''):
+def validate(model, loader, loss_fn, args, sample_num, split='Eval', log_suffix=''):
     print('-----sample num', sample_num)
     batch_time_m = AverageMeter()
     losses_m = AverageMeter()
@@ -225,7 +235,7 @@ def validate(model, loader, loss_fn, args, sample_num, log_suffix=''):
 
             # if batch_idx % args.log_interval == 0 or last_batch:
             if batch_idx % args.log_interval == 0:
-                log_name = 'Test' + log_suffix
+                log_name = split + log_suffix
                 _logger.info(
                     '{0}: [{1:>4d}/{2}]  '
                     'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
@@ -234,16 +244,17 @@ def validate(model, loader, loss_fn, args, sample_num, log_suffix=''):
                         loss=losses_m, top1=top1_m))
 
             if last_batch:
-                log_name = 'Test' + log_suffix
+                log_name = split + log_suffix
+                f1 = f1_score(target_all, output_all).cpu().numpy()
                 _logger.info(
                     '{0}: [{1:>4d}/{2}]  '
                     'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
                     'Acc@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
                     'F1score: {f1:.3f}'.format(
                         log_name, batch_idx, last_idx,
-                        loss=losses_m, top1=top1_m, f1 = f1_score(target_all, output_all)))
+                        loss=losses_m, top1=top1_m, f1 = f1))
 
-    metrics = OrderedDict([('loss', losses_m.avg), ('top1', top1_m.avg)])
+    metrics = OrderedDict([('loss', losses_m.avg), ('top1', top1_m.avg), ('f1', f1)])
 
     return metrics
 
