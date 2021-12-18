@@ -69,7 +69,8 @@ def main():
                                                                                           batch_size = args.batch_size, 
                                                                                           input_size = args.input_size[-1],
                                                                                           mean = args.mean,
-                                                                                          std = args.std)
+                                                                                          std = args.std,
+                                                                                          dataset_type = args.dataset_type)
 
     # setup loss function
     if args.focal_loss:

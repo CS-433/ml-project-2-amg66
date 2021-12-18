@@ -6,7 +6,7 @@ def parse_args():
 
     # Dataset parameters
     parser.add_argument('--data_dir', metavar='DIR', default = '/home/project/data2/our_data_processed', help='path to dataset')
-    # parser.add_argument('--data_dir_list', default =['/media/data/mu/ML2/data2/our_data/Diabetes/images', '/media/data/mu/ML2/data2/our_data/HIV/images'], help='list of path to dataset')
+    parser.add_argument('--dataset_type', default='all', help='type of dataset (all: whole dataset, H: HIV data, D: diabetes data)')
 
     # Model parameters
     parser.add_argument('--model', default='resnet50', type=str, metavar='MODEL',

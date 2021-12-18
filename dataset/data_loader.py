@@ -19,13 +19,17 @@ def get_random_item(dataset, test_ratio=0.2):
 
     return train_set, test_set
 
-def get_train_test_data(dataset_dir, type=None):
+def get_train_test_data(dataset_dir, type='all'):
     eval_ratio = 1/8
 
     train_file = f'{dataset_dir}/experiments/train.csv'
     test_file = f'{dataset_dir}/experiments/test.csv'
 
     df_train = pd.read_csv(train_file, index_col='image')
+    if type == 'H':
+        df_train = df_train[df_train['type']=='H']
+    elif type == 'D':
+        df_train = df_train[df_train['type']=='D']
     train_val_imgs = df_train.index.tolist()
     train_val_imgs = [f'{dataset_dir}/{img}' for img in train_val_imgs]
     train_val_ids = df_train['id'].tolist()
@@ -46,6 +50,10 @@ def get_train_test_data(dataset_dir, type=None):
     print('During validation: pos. vs neg. 【', positive_num, 'vs', negative_num, '】')
 
     df_test = pd.read_csv(test_file, index_col='image')
+    if type == 'H':
+        df_test = df_test[df_test['type']=='H']
+    elif type == 'D':
+        df_test = df_test[df_test['type']=='D']
     test_imgs = df_test.index.tolist()
     test_imgs = [f'{dataset_dir}/{img}' for img in test_imgs]
     test_ids = df_test['id'].tolist()
@@ -87,9 +95,9 @@ def create_loader(dataset_dir,
                   input_size = 224,
                   mean = [0.485, 0.456, 0.406],
                   std = [0.229, 0.224, 0.225],
-                  num_workers=8):
+                  num_workers=8,
+                  dataset_type='all'):
 
-    # TODO
     train_transforms = transforms.Compose([
                             transforms.Resize(int(1.1*input_size)),
                             transforms.RandomResizedCrop(input_size),
@@ -107,7 +115,7 @@ def create_loader(dataset_dir,
                             transforms.Normalize(mean, std)          
                         ])
 
-    train_data, val_data, test_data = get_train_test_data(dataset_dir)
+    train_data, val_data, test_data = get_train_test_data(dataset_dir, type=dataset_type)
 
     train_set = TBDataset(train_data, transform=train_transforms)
     train_loader = DataLoader(
