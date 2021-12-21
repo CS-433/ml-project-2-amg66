@@ -15,7 +15,10 @@ def detect_rectangle(input_path, out_path):
         img_path = os.path.join(input_path, img_name)
 
         image = cv2.imread(img_path)
-        image = cv2.resize(image, (1024, 720))
+        if image.shape[1] > image.shape[0]:
+            image = cv2.resize(image, (1024, 720))
+        else:
+            image = cv2.resize(image, (720, 1024))
 
         yuv = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
         y,u,v = cv2.split(yuv)
@@ -47,7 +50,7 @@ def detect_rectangle(input_path, out_path):
         lines = cv2.HoughLinesP(blank_edges, 1, np.pi / 180, 50, minLineLength=10)
                 
         if index < 1 or lines is None:
-            lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 80, minLineLength=5)
+            lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 50, minLineLength=10)
             blank = np.zeros(gray.shape, dtype=np.uint8)
             for line in lines:
                 x1,y1,x2,y2 = line[0]
@@ -132,7 +135,7 @@ def detect_rectangle(input_path, out_path):
             blank = blank[pad_value:shape[0]-pad_value, pad_value:shape[1]-pad_value]
             blank = np.pad(blank, ((pad_value,pad_value), (pad_value,pad_value)), 'constant',constant_values = (0,0))
             edges = cv2.Canny(blank,50,150,apertureSize=3)
-            lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 40, minLineLength=5)
+            lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 30, minLineLength=5)
             blank = np.zeros(gray.shape, dtype=np.uint8)
             for line in lines:
                 x1,y1,x2,y2 = line[0]
