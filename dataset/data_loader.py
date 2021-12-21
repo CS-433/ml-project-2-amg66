@@ -2,10 +2,12 @@ import torch
 from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 torch.manual_seed(17)
-from dataset.dataset import TBDataset, get_id_from_imname
+
+from dataset.dataset import TBDataset
 import glob
 import numpy as np
 import pandas as pd
+import os
 
 def get_random_item(dataset, test_ratio=0.2):
 
@@ -54,6 +56,7 @@ def get_train_test_data(dataset_dir, type='all'):
         df_test = df_test[df_test['type']=='H']
     elif type == 'D':
         df_test = df_test[df_test['type']=='D']
+        
     test_imgs = df_test.index.tolist()
     test_imgs = [f'{dataset_dir}/{img}' for img in test_imgs]
     test_ids = df_test['id'].tolist()
@@ -66,29 +69,6 @@ def get_train_test_data(dataset_dir, type='all'):
     print('---------------------------------------------------------------')
 
     return train_set, val_set, test_set
-
-
-def split_train_test(dataset_dir_list, train_ratio=0.8):
-
-    data_list = []
-    for dataset_dir in dataset_dir_list:
-        data = glob.glob(f'{dataset_dir}/*')
-        data_list.extend(data)
-
-    id_list = [get_id_from_imname(f) for f in data_list]
-    num_cls, counts = np.unique(id_list, return_counts=True)
-
-    pos_list = [data for data, id in zip(data_list, id_list) if id ==1]
-    neg_list = [data for data, id in zip(data_list, id_list) if id ==0]
-
-    train_pos_dataset, test_pos_dataset = get_random_item(np.array(pos_list))
-    train_neg_dataset, test_neg_dataset = get_random_item(np.array(neg_list))
-
-    train = np.append(train_pos_dataset, train_neg_dataset)
-    test = np.append(test_pos_dataset, test_neg_dataset)
-
-    return train, test, num_cls
-
 
 def create_loader(dataset_dir, 
                   batch_size=64, 
@@ -114,7 +94,6 @@ def create_loader(dataset_dir,
                             transforms.ToTensor(),
                             transforms.Normalize(mean, std)          
                         ])
-
     train_data, val_data, test_data = get_train_test_data(dataset_dir, type=dataset_type)
 
     train_set = TBDataset(train_data, transform=train_transforms)

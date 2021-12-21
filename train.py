@@ -76,6 +76,9 @@ def main():
     if args.focal_loss:
         train_loss_fn = FocalLoss(gamma=2, alpha=0.25)
         print("using the focal loss")
+    elif args.f1_loss:
+        train_loss_fn = F1_Loss()
+        print("using the focal loss")
     else:
         train_loss_fn = nn.CrossEntropyLoss()
     train_loss_fn = train_loss_fn.cuda()

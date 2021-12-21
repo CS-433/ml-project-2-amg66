@@ -2,7 +2,10 @@ import argparse
 import yaml
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='EfficientnetB2 training')
+    parser = argparse.ArgumentParser(description='')
+
+    #method description
+    parser.add_argument('--A_des', default = '', help='give a description to the method')
 
     # Dataset parameters
     parser.add_argument('--data_dir', metavar='DIR', default = '/home/project/data2/our_data_processed', help='path to dataset')
@@ -11,7 +14,7 @@ def parse_args():
     # Model parameters
     parser.add_argument('--model', default='resnet50', type=str, metavar='MODEL',
                         help='Name of model to train (default: "resnet50"')
-    parser.add_argument('--pretrained', action='store_true', default = True,
+    parser.add_argument('--pretrained', default = True,
                         help='Start with pretrained version of specified network (if avail)')
     parser.add_argument('--initial-checkpoint', default='', type=str, metavar='PATH',
                         help='Initialize model from this checkpoint (default: none)')
@@ -63,6 +66,8 @@ def parse_args():
     # Augmentation & regularization parameters
     parser.add_argument('--focal-loss', action='store_true', default=False,
                         help='Enable Focal Loss')
+    parser.add_argument('--f1-loss', action='store_true', default=False,
+                        help='Enable F1 Loss')
     parser.add_argument('--drop', type=float, default=0.0, metavar='PCT',
                     help='Dropout rate (default: 0.)')
     parser.add_argument('--drop-connect', type=float, default=None, metavar='PCT',
@@ -91,5 +96,4 @@ def parse_args():
     args = parser.parse_args()
     # Cache the args as a text string to save them in the output dir later
     args_text = yaml.safe_dump(args.__dict__, default_flow_style=False)
-    args_text = parser.description + '\n' + args_text
     return args, args_text
