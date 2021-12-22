@@ -76,7 +76,7 @@ def preprocess(inDir, outDir, size=512):
         print('save to ', out_path)
 
 print('Preprocessing...')
-input_dir = '/media/data/mu/ML2/data2/our_data'
-output_dir = '/media/data/mu/ML2/data2/our_data_processed'
+input_dir = '/home/project/data2/our_data'
+output_dir = '/home/project/data2/our_data_processed'
 SIZE = 512
 preprocess(input_dir, output_dir, size=int(SIZE*1.1))
