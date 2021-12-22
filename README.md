@@ -70,6 +70,7 @@ You can put your description of each experiment with argument **A_des**. You can
 
 #### detect_rectangle.py (section 3.2.2)
 The procedure:
+![remove1](./figs/imp_method1.PNG)
 
 
 #### find_rectangle_new.py (section 3.2.3)
