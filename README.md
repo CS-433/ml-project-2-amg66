@@ -9,10 +9,21 @@ Anna Paulish (CSE) <anna.paulish@epfl.ch>
 
 In this repository, you can find the code for TB detection from chest x-rays with HIV and diabetes in West Africa. 
 
+In this project, we aim to:
+- make a survey on the existing studies on TB detection from chest x-rays,
+- test the existing methods (with code) on our dataset,
+- do data preprocessing (especiall label remove for each images),
+- prepare a pipeline for TB detection and show the performance on each subgroup (HIV and Diabetes).
+
+
 ### Contribution
 - A new TB detection pipeline that can perform well on the challenging TB dataset. And various attempts for computer vision techniques like data preprocessing and augmentation, image classification models and training tricks.
 - A label remove method that can automatically remove the labels in the original photos, and a label removed dataset that can be used to train learning based label remove methods.
 - A wide thorough research of the existing TB detection methods and datasets, and a fair comparison with them.
+
+### Baseline
+To test as many as advanced computer techniques as we can, instead of using existing TB detection method as our baseline, we resort to build our baseline from scratch with deep learning classification library TIMM. TIMM is a frequently updated library that already has 2.5k stars on the github. With the help of this library, we successfully build our baseline and test various advanced techniques in network architecture, loss function, optimiser and learning rate schedule.
+
 
 ### Data
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report.
@@ -64,3 +75,9 @@ The procedure:
 #### find_rectangle_new.py (section 3.2.3)
 The procedure:
 ![remove2](./figs/rec_detection.png)
+
+
+### Comparison works in the report
+
+- [TBCNN](https://github.com/frapa/tbcnn) 
+- [XTBTorch](https://github.com/frapa/tbcnn)
