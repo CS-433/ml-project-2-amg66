@@ -24,14 +24,22 @@ def get_random_item(dataset, test_ratio=0.2):
 def get_train_test_data(dataset_dir, type='all'):
     eval_ratio = 1/8
 
-    train_file = f'{dataset_dir}/experiments/train.csv'
-    test_file = f'{dataset_dir}/experiments/test.csv'
+    if type != 'Concat':
+        train_file = f'{dataset_dir}/experiments/train.csv'
+        test_file = f'{dataset_dir}/experiments/test.csv'
+        df_train = pd.read_csv(train_file, index_col='image')
+        df_test = pd.read_csv(test_file, index_col='image')
+    else:
+        data_file = f'{dataset_dir}/experiments/dataset.csv'
+        all_data = pd.read_csv(data_file, index_col='image')
+        df_test = all_data[all_data['type']=='D']
+        df_train = all_data.drop(df_test.index.tolist())
 
-    df_train = pd.read_csv(train_file, index_col='image')
     if type == 'H':
         df_train = df_train[df_train['type']=='H']
     elif type == 'D':
         df_train = df_train[df_train['type']=='D']
+
     train_val_imgs = df_train.index.tolist()
     train_val_imgs = [f'{dataset_dir}/{img}' for img in train_val_imgs]
     train_val_ids = df_train['id'].tolist()
@@ -51,7 +59,6 @@ def get_train_test_data(dataset_dir, type='all'):
     negative_num = len([img_id[1] for img_id in val_set if int(img_id[1])==0])
     print('During validation: pos. vs neg. 【', positive_num, 'vs', negative_num, '】')
 
-    df_test = pd.read_csv(test_file, index_col='image')
     if type == 'H':
         df_test = df_test[df_test['type']=='H']
     elif type == 'D':
