@@ -70,8 +70,14 @@ You can put your description of each experiment with argument **A_des**. You can
 
 #### detect_rectangle.py (section 3.2.2)
 The procedure:
+</br>
+
 ![remove1](./figs/imp_method1.PNG)
 
+`a)` - the original image </br>
+`b)` - grayscale + adaptive threshold </br>
+`c)` - after removing noise using morphological transformations </br>
+`d)` - find rectangular contour + draw a rectangle with additional margins </br>
 
 #### find_rectangle_new.py (section 3.2.3)
 The procedure:
