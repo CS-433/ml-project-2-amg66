@@ -44,8 +44,7 @@ pip install timm
 ```
 
 ### How to reproduce the results
-
-You can run a series of experiments by using:
+For our baseline model, you can run a series of experiments by using:
 ```
 bash run.sh
 ```
