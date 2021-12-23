@@ -29,7 +29,7 @@ The results of all the methods that we test on the whole dataset are shown in th
 ![table1](./figs/table1_alldata.PNG) </br>
 
 We also test our method on HIV and Diabetes sub datasets. The performance is shown in the table below:
-![table1](./figs/table2_hiv_diabetes) </br>
+![table2](./figs/table2_hiv_diabetes) </br>
 
 ### Data and models
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report. \
