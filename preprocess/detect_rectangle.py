@@ -6,17 +6,14 @@ def detect_rectangle(input_path, out_path):
     list_files = os.listdir(input_path)
 
     for img_name in list_files:
-        if '.JPG' not in img_name:
-            continue
         img_path = input_path + img_name
-        print('image', img_path)
 
         image = cv2.imread(img_path)
         image = cv2.resize(image, (1024, 720))
         result = image.copy()
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15, 30)
+        thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15, 5)
 
         # Fill rectangular contours
         cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -35,7 +32,7 @@ def detect_rectangle(input_path, out_path):
             cv2.drawContours(image, [c], 0, (255, 255, 255), -1)
             cv2.drawContours(image, [c], 0, (255, 255, 255), 20)
 
-            cv2.imwrite(os.path.join(out_path, "without_rect_" + img_name), image)
+            cv2.imwrite(os.path.join(out_path, "" + img_name), image)
 
             cv2.waitKey()
 
