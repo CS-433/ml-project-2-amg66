@@ -71,6 +71,10 @@ You can put your description of each experiment with argument **A_des**. You can
 ─ train.py                         ### train and test script
 ─ run.sh                           ### script to run the experiments
 ```
+### Dataset overview
+In the picture below you can see our original TB X-Ray images with labels on the left and the processed images without labels on the right:
+
+![dataset](./figs/dataset.png) </br>
 
 ### Algorithm details - Label remove
 
