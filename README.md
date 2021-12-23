@@ -28,7 +28,7 @@ To test as many as advanced computer techniques as we can, instead of using exis
 ### Data
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report.
 
-### How to reproduce the reuslts
+### How to reproduce the results
 
 You can run a series of experiments by using:
 ```
