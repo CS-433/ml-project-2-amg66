@@ -3,9 +3,9 @@
 ### Detecting TB from chest x-rays in a population of patients living with HIV and diabetes in West Africa
 
 **Team members**
-Haozhe Qi (EDIC) <haozhe.qi@epfl.ch>
-Mu Zhou (EDIC) <mu.zhou@epfl.ch>
-Anna Paulish (CSE) <anna.paulish@epfl.ch>
+- Haozhe Qi (EDIC) <haozhe.qi@epfl.ch>
+- Mu Zhou (EDIC) <mu.zhou@epfl.ch>
+- Anna Paulish (CSE) <anna.paulish@epfl.ch>
 
 In this repository, you can find the code for TB detection from chest x-rays with HIV and diabetes in West Africa. 
 
@@ -25,8 +25,23 @@ In this project, we aim to:
 To test as many as advanced computer techniques as we can, instead of using existing TB detection method as our baseline, we resort to build our baseline from scratch with deep learning classification library [TIMM](https://github.com/rwightman/pytorch-image-models). TIMM is a frequently updated library that already has 2.5k stars on the github. With the help of this library, we successfully build our baseline and test various advanced techniques in network architecture, loss function, optimiser and learning rate schedule.
 
 
-### Data
-Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report.
+### Data and models
+Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report. \
+All models you can find via [this link]( https://drive.google.com/drive/folders/1uWRxf4REA1D_d-jD3GN9xItkkQrYA_En?usp=sharing). \
+Please note that you can access the data and models only by __epfl__ email. 
+
+### Requirements
+To run it properly:
+16 GB of RAM.
+A nvdia GPU with cuda support (even a cheap one).
+
+```sh
+# Install dependencies
+pip install -r requirements.txt
+
+# Install the library -- timm
+pip install timm
+```
 
 ### How to reproduce the results
 
@@ -44,7 +59,6 @@ python train.py --A_des 'train resnet with StepLR' \
 You can put your description of each experiment with argument **A_des**. You can update the model, path of dataset, and type of dataset by arguments **model** *(resnet50, efficientnet_b2)* , **data_dir** and **dataset_type** *('all' for whole dataset, 'D' for diabetes, 'H' for HIV)*.
 
 
-### Code structure
 ### Code structure
 ```sh
 - experiments
@@ -71,13 +85,17 @@ You can put your description of each experiment with argument **A_des**. You can
 ─ train.py                         ### train and test script
 ─ run.sh                           ### script to run the experiments
 ```
+### Dataset overview
+In the picture below you can see our original TB X-Ray images with labels on the left and the processed images without labels on the right:
+
+![dataset](./figs/dataset.png) </br>
 
 ### Algorithm details - Label remove
 
 Comparison between 3 label remove methods: 
 ![remove1](./figs/table_remove.PNG) </br>
 #### detect_rectangle.py (section 3.2.2)
-The procedure of the improved method 1:
+The procedure of the improved method 1 (accuracy 71%):
 </br>
 
 ![remove1](./figs/imp_method1.PNG)
@@ -88,11 +106,12 @@ The procedure of the improved method 1:
 `d)` - find rectangular contour + draw a rectangle with additional margins </br>
 
 #### find_rectangle_new.py (section 3.2.3)
-The procedure of the improved method 2:
+The procedure of the improved method 2 (accuracy 90.2%):
 ![remove2](./figs/rec_detection.png)
 
 
-### Comparison works in the report
-
-- [TBCNN](https://github.com/frapa/tbcnn) 
-- [XTBTorch](https://github.com/frapa/tbcnn)
+### Reference
+- [TIMM](https://github.com/rwightman/pytorch-image-models): for our basline
+- [TBCNN](https://github.com/frapa/tbcnn) : for comparision experiments
+- [XTBTorch](https://github.com/frapa/tbcnn): for comparision experiments
+- [lungs_segmentation](https://github.com/alimbekovKZ/lungs_segmentation): for lung segmentation on the data preprocessing stage
