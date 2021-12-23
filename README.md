@@ -25,11 +25,12 @@ In this project, we aim to:
 To test as many as advanced computer techniques as we can, instead of using existing TB detection method as our baseline, we resort to build our baseline from scratch with deep learning classification library [TIMM](https://github.com/rwightman/pytorch-image-models). TIMM is a frequently updated library that already has 2.5k stars on the github. With the help of this library, we successfully build our baseline and test various advanced techniques in network architecture, loss function, optimiser and learning rate schedule.
 
 ### Performance
-The results of all the methods that we test on the whole dataset are shown in the table below:
-![table1](./figs/table1_alldata.PNG) </br>
+The results of all the methods that we test on the whole dataset are shown in the table below: </br>
+<p align="center"> <img src="./figs/table1_alldata.PNG " width="400"></br> </p>
 
-We also test our method on HIV and Diabetes sub datasets. The performance is shown in the table below:
-![table_hiv_d](./figs/table2_hiv_diabetes.jpg) </br>
+We also test our method on HIV and Diabetes sub datasets. The performance is shown in the table below: </br>
+<p align="center"> <img src="./figs/table2_hiv_diabetes.jpg " width="400"></br> </p>
+
 
 ### Data and models
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report. \
@@ -92,18 +93,21 @@ You can put your description of each experiment with argument **A_des**. You can
 ```
 ### Dataset overview
 In the picture below you can see our original TB X-Ray images with labels on the left and the processed images without labels on the right:
-
-![dataset](./figs/dataset.png) </br>
+<p align="center">
+</br> <img src="./figs/dataset.png " width="500"></br>
+</p>
 
 ### Algorithm details - Label remove
 
 Comparison between 3 label remove methods: 
-![remove1](./figs/table_remove.PNG) </br>
-#### detect_rectangle.py (section 3.2.2)
-The procedure of the improved method 1 (accuracy 71%):
-</br>
+<p align="center"> <img src="./figs/table_remove.PNG " width="400"></br> </p>
 
-![remove1](./figs/imp_method1.PNG)
+#### detect_rectangle.py (section 3.2.2)
+
+The procedure of the improved method 1 (accuracy 71%):
+<p align="center">
+</br> <img src="./figs/imp_method1.PNG " width="400"></br>
+</p>
 
 `a)` - the original image </br>
 `b)` - grayscale + adaptive threshold </br>
