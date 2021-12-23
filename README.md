@@ -28,6 +28,9 @@ To test as many as advanced computer techniques as we can, instead of using exis
 The results of all the methods that we test on the whole dataset are shown in the table below:
 ![table1](./figs/table1_alldata.PNG) </br>
 
+We also test our method on HIV and Diabetes sub datasets. The performance is shown in the table below:
+![table1](./figs/table2_hiv_diabetes) </br>
+
 ### Data and models
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report. \
 All models you can find via [this link]( https://drive.google.com/drive/folders/1uWRxf4REA1D_d-jD3GN9xItkkQrYA_En?usp=sharing). \
