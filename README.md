@@ -45,7 +45,8 @@ You can put your description of each experiment with argument **A_des**. You can
 
 
 ### Code structure
-```
+### Code structure
+```sh
 - experiments
     ├── dataset.csv                ### whole dataset
     ├── train.csv                  ### training data
@@ -59,6 +60,11 @@ You can put your description of each experiment with argument **A_des**. You can
 ─ dataset  
     ├── dataset.py                 ### define the class of TB dataset
     └── data_loader.py             ### load the data
+─ related_works
+    ├── tbcnn                      ### comparison model 1
+        ├── ...
+    └── XTBTorch                   ### comparison model 2
+        ├── ...
 ─ arguments.py                     ### all the arguments we need 
 ─ f1_loss.py                       ### calculate F1 loss
 ─ focal_loss.py                    ### focal loss
