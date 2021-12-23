@@ -68,8 +68,10 @@ You can put your description of each experiment with argument **A_des**. You can
 
 ### Algorithm details - Label remove
 
+Comparison between 3 label remove methods: 
+![remove1](./figs/table_remove.PNG) </br>
 #### detect_rectangle.py (section 3.2.2)
-The procedure:
+The procedure of the improved method 1:
 </br>
 
 ![remove1](./figs/imp_method1.PNG)
@@ -80,7 +82,7 @@ The procedure:
 `d)` - find rectangular contour + draw a rectangle with additional margins </br>
 
 #### find_rectangle_new.py (section 3.2.3)
-The procedure:
+The procedure of the improved method 2:
 ![remove2](./figs/rec_detection.png)
 
 
