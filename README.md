@@ -90,6 +90,7 @@ You can put your description of each experiment with argument **A_des**. You can
 ─ focal_loss.py                    ### focal loss
 ─ train.py                         ### train and test script
 ─ run.sh                           ### script to run the experiments
+─ requirements.txt                 ### requirements
 ```
 ### Dataset overview
 In the picture below you can see our original TB X-Ray images with labels on the left and the processed images without labels on the right:
