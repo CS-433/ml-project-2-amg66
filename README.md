@@ -25,7 +25,8 @@ In this project, we aim to:
 To test as many as advanced computer techniques as we can, instead of using existing TB detection method as our baseline, we resort to build our baseline from scratch with deep learning classification library [TIMM](https://github.com/rwightman/pytorch-image-models). TIMM is a frequently updated library that already has 2.5k stars on the github. With the help of this library, we successfully build our baseline and test various advanced techniques in network architecture, loss function, optimiser and learning rate schedule.
 
 ### Performance
-
+The results of all the methods that we test on the whole dataset are shown in the table below:
+![table1](./figs/table1_alldata.PNG) </br>
 
 ### Data and models
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report. \
