@@ -3,9 +3,9 @@
 ### Detecting TB from chest x-rays in a population of patients living with HIV and diabetes in West Africa
 
 **Team members**
-Haozhe Qi (EDIC) <haozhe.qi@epfl.ch>
-Mu Zhou (EDIC) <mu.zhou@epfl.ch>
-Anna Paulish (CSE) <anna.paulish@epfl.ch>
+- Haozhe Qi (EDIC) <haozhe.qi@epfl.ch>
+- Mu Zhou (EDIC) <mu.zhou@epfl.ch>
+- Anna Paulish (CSE) <anna.paulish@epfl.ch>
 
 In this repository, you can find the code for TB detection from chest x-rays with HIV and diabetes in West Africa. 
 
@@ -28,6 +28,19 @@ To test as many as advanced computer techniques as we can, instead of using exis
 ### Data
 Due to the privacy issue, we only release the data in the report. You can find the link in **section 3.1** in our report.
 
+### Requirements
+To run it properly:
+16 GB of RAM.
+A nvdia GPU with cuda support (even a cheap one).
+
+```sh
+# Install dependencies
+pip install -r requirements.txt
+
+# Install the library -- timm
+pip install timm
+```
+
 ### How to reproduce the results
 
 You can run a series of experiments by using:
@@ -44,7 +57,6 @@ python train.py --A_des 'train resnet with StepLR' \
 You can put your description of each experiment with argument **A_des**. You can update the model, path of dataset, and type of dataset by arguments **model** *(resnet50, efficientnet_b2)* , **data_dir** and **dataset_type** *('all' for whole dataset, 'D' for diabetes, 'H' for HIV)*.
 
 
-### Code structure
 ### Code structure
 ```sh
 - experiments
@@ -77,7 +89,7 @@ You can put your description of each experiment with argument **A_des**. You can
 Comparison between 3 label remove methods: 
 ![remove1](./figs/table_remove.PNG) </br>
 #### detect_rectangle.py (section 3.2.2)
-The procedure of the improved method 1:
+The procedure of the improved method 1 (accuracy 71%):
 </br>
 
 ![remove1](./figs/imp_method1.PNG)
@@ -88,11 +100,12 @@ The procedure of the improved method 1:
 `d)` - find rectangular contour + draw a rectangle with additional margins </br>
 
 #### find_rectangle_new.py (section 3.2.3)
-The procedure of the improved method 2:
+The procedure of the improved method 2 (accuracy 90.2%):
 ![remove2](./figs/rec_detection.png)
 
 
-### Comparison works in the report
-
-- [TBCNN](https://github.com/frapa/tbcnn) 
-- [XTBTorch](https://github.com/frapa/tbcnn)
+### Reference
+- [TIMM](https://github.com/rwightman/pytorch-image-models): for our basline
+- [TBCNN](https://github.com/frapa/tbcnn) : for comparision experiments
+- [XTBTorch](https://github.com/frapa/tbcnn): for comparision experiments
+- [lungs_segmentation](https://github.com/alimbekovKZ/lungs_segmentation): for lung segmentation on the data preprocessing stage
